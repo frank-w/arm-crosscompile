@@ -46,13 +46,17 @@ jobs:
         run: |
           ./buildchroot.sh arm64
 
-      - name: Upload binaries to release
+#      - name: Upload binaries to release
 #        if: endsWith(github.ref,'-main') 
-        uses: softprops/action-gh-release@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          body: ${{ github.sha }}
+#        uses: softprops/action-gh-release@v1
+#        with:
+#          token: ${{ secrets.GITHUB_TOKEN }}
+#          body: ${{ github.sha }}
 #          tag_name: "CI-BUILD"
-          target_commitish: ${{ github.sha }}
-          files: |
+#          target_commitish: ${{ github.sha }}
+#          files: |
+      - uses: actions/upload-artifact@v2
+        with:
+          name: my-artifact
+          path: |
             debian_*.tar.gz

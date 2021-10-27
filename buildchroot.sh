@@ -3,8 +3,8 @@
 
 set -x
 
-distro=bullseye
-#distro=buster
+#distro=bullseye
+distro=buster
 #distro=stretch
 arch=armhf
 #arch=arm64

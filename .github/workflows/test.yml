@@ -14,7 +14,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build:
+  build-chroot:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     #runs-on: ubuntu-18.04
@@ -42,6 +42,23 @@ jobs:
           sudo apt update
           sudo apt install qemu-user-static
 
-#      - name: build arm64 chroot
-#        run: |
-#          ./buildchroot.sh arm64
+      - name: build arm64 chroot
+        run: |
+          ./buildchroot.sh arm64
+
+      - name: Upload binaries to release
+#        if: endsWith(github.ref,'-main') 
+        uses: softprops/action-gh-release@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+#          body: ${{ github.sha }}
+          tag_name: "CHROOT-Bullseye"
+          target_commitish: ${{ github.sha }}
+          files: |
+            debian_*.tar.gz
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: bullseye-chroot
+          path: |
+            debian_*.tar.gz

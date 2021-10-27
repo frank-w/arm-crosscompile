@@ -3,8 +3,8 @@
 
 set -x
 
-#distro=bullseye
-distro=buster
+distro=bullseye
+#distro=buster
 #distro=stretch
 arch=armhf
 #arch=arm64
@@ -16,6 +16,14 @@ if [[ -n "$1" ]];then
 	if [[ "$1" =~ armhf|arm64 ]];then
 		echo "setting arch"
 		arch=$1
+	fi
+fi
+
+if [[ -n "$2" ]];then
+	echo "\$2:"$2
+	if [[ "$2" =~ buster|bullseye ]];then
+		echo "setting arch"
+		distro=$2
 	fi
 fi
 

@@ -60,3 +60,5 @@ deb-src http://ftp.$langcode.debian.org/debian $distro-updates main contrib non-
 deb http://security.debian.org/debian-security $distro/updates main contrib non-free
 deb-src http://security.debian.org/debian-security $distro/updates main contrib non-free
 EOF
+
+sudo tar -czf debian_${distro}_${arch}.tar.gz $targetdir

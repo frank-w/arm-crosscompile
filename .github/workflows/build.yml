@@ -52,7 +52,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 #          body: ${{ github.sha }}
-          tag_name: "CI-BUILD-"${{ github.sha }}
+          tag_name: "CI-BUILD-${{ github.sha }}"
           target_commitish: ${{ github.sha }}
           files: |
             debian_*.tar.gz

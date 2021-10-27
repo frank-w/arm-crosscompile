@@ -32,9 +32,9 @@ jobs:
           sudo apt update
           sudo apt install debootstrap binfmt-support qemu-user-static
 
-#      - name: build armhf chroot
-#        run: |
-#          ./buildchroot.sh armhf
+      - name: build armhf chroot
+        run: |
+          ./buildchroot.sh armhf
 
       - name: Install fix for aarch64 ldconfig-issue
         run: |

@@ -30,21 +30,24 @@ jobs:
       - name: Install depencies
         run: |
           sudo apt update
-          #sudo apt install debootstrap binfmt-support qemu-user-static
+          sudo apt install binfmt-support qemu-user-static
 
-      - uses: actions/download-artifact@v2
-        with:
-          name: bullseye-chroot
+#      - uses: actions/download-artifact@v2
+#        with:
+#          name: bullseye-chroot
 
-      - name: unpack chroot
+      - name: download and unpack chroot
         run: |
-          sudo tar -xzf debian_bullseye_armhf.tar.gz
-          sudo tar -xzf debian_bullseye_arm64.tar.gz
+          wget -nv https://github.com/frank-w/arm-crosscompile/releases/download/CHROOT-Bullseye/debian_buster_armhf.tar.gz
+          wget -nv https://github.com/frank-w/arm-crosscompile/releases/download/CHROOT-Bullseye/debian_buster_arm64.tar.gz
+          sudo tar -xzf debian_buster_armhf.tar.gz --strip-components=5
+          sudo tar -xzf debian_buster_arm64.tar.gz --strip-components=5
+          ls -lh
 
       - name: build hostapd/wpa_supplicant (armhf)
         env:
           ARCH: armhf
-          CHROOT: debian_bullseye_armhf
+          CHROOT: debian_buster_armhf
         run: |
           #sudo cp build_hostapd.sh debian_buster_armhf//usr/local/bin/
           #sudo chroot debian_buster_armhf /usr/local/bin/build_hostapd.sh
@@ -55,8 +58,8 @@ jobs:
 
       - name: build hostapd/wpa_supplicant (arm64)
         env:
-          ARCH: armhf
-          CHROOT: debian_bullseye_arm64
+          ARCH: arm64
+          CHROOT: debian_buster_arm64
         run: |
           #sudo cp build_hostapd.sh debian_buster_armhf//usr/local/bin/
           #sudo chroot debian_buster_armhf /usr/local/bin/build_hostapd.sh

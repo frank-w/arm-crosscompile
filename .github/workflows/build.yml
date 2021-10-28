@@ -1,4 +1,4 @@
-name: CI
+name: CI-build
 
 # Controls when the action will run. 
 on:
@@ -30,21 +30,40 @@ jobs:
       - name: Install depencies
         run: |
           sudo apt update
-          sudo apt install debootstrap binfmt-support qemu-user-static
+          #sudo apt install debootstrap binfmt-support qemu-user-static
 
-      - name: build armhf chroot
+      - uses: actions/download-artifact@v2
+        with:
+          name: bullseye-chroot
+
+      - name: unpack chroot
         run: |
-          ./buildchroot.sh armhf
+          sudo tar -xzf debian_bullseye_armhf.tar.gz
+          sudo tar -xzf debian_bullseye_arm64.tar.gz
 
-#      - name: Install fix for aarch64 ldconfig-issue
-#        run: |
-#          sudo add-apt-repository -y ppa:jacob/virtualisation
-#          sudo apt update
-#          sudo apt install qemu-user-static
-
-      - name: build arm64 chroot
+      - name: build hostapd/wpa_supplicant (armhf)
+        env:
+          ARCH: armhf
+          CHROOT: debian_bullseye_armhf
         run: |
-          ./buildchroot.sh arm64
+          #sudo cp build_hostapd.sh debian_buster_armhf//usr/local/bin/
+          #sudo chroot debian_buster_armhf /usr/local/bin/build_hostapd.sh
+          sudo cp build_hostapd.sh ${{ env.CHROOT }}//usr/local/bin/
+          sudo chroot ${{ env.CHROOT }} /usr/local/bin/build_hostapd.sh
+          cp ${{ env.CHROOT }}/usr/src/hostapd/hostap/hostapd/hostapd ./hostapd_${{ env.ARCH }}
+          cp ${{ env.CHROOT }}/usr/src/hostapd/hostap/wpa_supplicant/wpa_supplicant ./wpa_supplicant_${{ env.ARCH }}
+
+      - name: build hostapd/wpa_supplicant (arm64)
+        env:
+          ARCH: armhf
+          CHROOT: debian_bullseye_arm64
+        run: |
+          #sudo cp build_hostapd.sh debian_buster_armhf//usr/local/bin/
+          #sudo chroot debian_buster_armhf /usr/local/bin/build_hostapd.sh
+          sudo cp build_hostapd.sh ${{ env.CHROOT }}//usr/local/bin/
+          sudo chroot ${{ env.CHROOT }} /usr/local/bin/build_hostapd.sh
+          cp ${{ env.CHROOT }}/usr/src/hostapd/hostap/hostapd/hostapd ./hostapd_${{ env.ARCH }}
+          cp ${{ env.CHROOT }}/usr/src/hostapd/hostap/wpa_supplicant/wpa_supplicant ./wpa_supplicant_${{ env.ARCH }}
 
       - name: Upload binaries to release
 #        if: endsWith(github.ref,'-main') 
@@ -55,10 +74,18 @@ jobs:
           tag_name: "CI-BUILD-${{ github.sha }}"
           target_commitish: ${{ github.sha }}
           files: |
-            debian_*.tar.gz
+             hostapd_*
+             wpa_supplicant_*
+#            debian_buster_armhf/usr/src/hostapd/hostap/hostapd/hostapd
+#            debian_buster_arm64/usr/src/hostapd/hostap/hostapd/hostapd
+#            debian_buster_armhf/usr/src/hostapd/hostap/wpa_supplicant/wpa_supplicant
+#            debian_buster_arm64/usr/src/hostapd/hostap/wpa_supplicant/wpa_supplicant
 
-      - uses: actions/upload-artifact@v2
-        with:
-          name: buster-chroot
-          path: |
-            debian_*.tar.gz
+#      - uses: actions/upload-artifact@v2
+#        with:
+#          name: binaries
+#          path: |
+#            debian_buster_armhf/usr/src/hostapd/hostap/hostapd/hostapd
+#            debian_buster_arm64/usr/src/hostapd/hostap/hostapd/hostapd
+#            debian_buster_armhf/usr/src/hostapd/hostap/wpa_supplicant/wpa_supplicant
+#            debian_buster_arm64/usr/src/hostapd/hostap/wpa_supplicant/wpa_supplicant

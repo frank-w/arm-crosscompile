@@ -42,7 +42,7 @@ jobs:
           DEBIAN_RELEASE: buster
           #CHROOT: 'debian_${{ env.DEBIAN_RELEASE }}_${{ env.ARCH }}'
         run: |
-          echo "current_date=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+          echo "CUR_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
           echo "DEBIAN_RELEASE=${{ env.DEBIAN_RELEASE }}" >> $GITHUB_ENV
           echo "ARCH=${{ env.ARCH }}" >> $GITHUB_ENV
           #echo "CHROOT=${{ env.CHROOT }}" >> $GITHUB_ENV
@@ -75,12 +75,10 @@ jobs:
           sudo chroot ${{ env.CHROOT }} /usr/local/bin/build_iproute2.sh
           cp ${{ env.CHROOT }}/usr/src/iproute2/iproute2.tar.gz ./iproute2_${{ env.ARCH }}.tar.gz
 
-
       - name: change arch in environment
         env:
           ARCH: arm64
         run: |
-          #echo "ARCH=arm64" >> $GITHUB_ENV
           echo "ARCH=${{ env.ARCH }}" >> $GITHUB_ENV
           echo "CHROOT=debian_${{ env.DEBIAN_RELEASE }}_${{ env.ARCH }}" >> $GITHUB_ENV
 
@@ -95,13 +93,17 @@ jobs:
           cp ${{ env.CHROOT }}/usr/src/hostapd/hostap/wpa_supplicant/wpa_supplicant ./wpa_supplicant_${{ env.ARCH }}
 
       - name: build iproute2 (arm64)
-#        env:
-#          ARCH: arm64
-#          CHROOT: debian_${{ env.DEBIAN_RELEASE }}_${{ env.ARCH }}
         run: |
           sudo cp build_iproute2.sh ${{ env.CHROOT }}/usr/local/bin/
           sudo chroot ${{ env.CHROOT }} /usr/local/bin/build_iproute2.sh
           cp ${{ env.CHROOT }}/usr/src/iproute2/iproute2.tar.gz ./iproute2_${{ env.ARCH }}.tar.gz
+
+      - name: build swconfig (arm64)
+        run: |
+          sudo cp swconfig_includes/switch.h ${{ env.CHROOT }}/usr/include/linux/
+          sudo cp build_swconfig.sh ${{ env.CHROOT }}/usr/local/bin/
+          sudo chroot ${{ env.CHROOT }} /usr/local/bin/build_swconfig.sh
+          cp ${{ env.CHROOT }}/usr/src/swconfig/swconfig ./swconfig_${{ env.ARCH }}
 
       - name: Upload binaries to release
 #        if: endsWith(github.ref,'-main') 
@@ -109,9 +111,10 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 #          body: ${{ github.sha }}
-          tag_name: "CI-BUILD-${{ github.sha }}"
+          tag_name: "CI-BUILD-${{ env.CUR_DATE }}"
           target_commitish: ${{ github.sha }}
           files: |
              hostapd_*
              wpa_supplicant_*
              iproute2_*.tar.gz
+             swconfig_*

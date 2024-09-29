@@ -64,7 +64,7 @@ jobs:
         run: |
           sudo cp build_hostapd.sh ${{ env.CHROOT }}/usr/local/bin/
           sudo chroot ${{ env.CHROOT }} /usr/local/bin/build_hostapd.sh
-          cp ${{ env.CHROOT }}/usr/src/hostapd/hostap/hostapd/hostapd ./hostapd_${{ env.ARCH }}
+          cp ${{ env.CHROOT }}/usr/src/hostapd/hostap/hostapd/hostapd.tar.gz ./hostapd_${{ env.ARCH }}.tar.gz
           cp ${{ env.CHROOT }}/usr/src/hostapd/hostap/wpa_supplicant/wpa_supplicant ./wpa_supplicant_${{ env.ARCH }}
 
       - name: build iproute2 (armhf)
@@ -90,7 +90,7 @@ jobs:
         run: |
           sudo cp build_hostapd.sh ${{ env.CHROOT }}/usr/local/bin/
           sudo chroot ${{ env.CHROOT }} /usr/local/bin/build_hostapd.sh
-          cp ${{ env.CHROOT }}/usr/src/hostapd/hostap/hostapd/hostapd ./hostapd_${{ env.ARCH }}
+          cp ${{ env.CHROOT }}/usr/src/hostapd/hostap/hostapd/hostapd.tar.gz ./hostapd_${{ env.ARCH }}.tar.gz
           cp ${{ env.CHROOT }}/usr/src/hostapd/hostap/wpa_supplicant/wpa_supplicant ./wpa_supplicant_${{ env.ARCH }}
 
       - name: build iproute2 (arm64)
@@ -115,7 +115,7 @@ jobs:
           tag_name: "CI-BUILD-${{ env.CUR_DATE }}"
           target_commitish: ${{ github.sha }}
           files: |
-             hostapd_*
+             hostapd_*.tar.gz
              wpa_supplicant_*
              iproute2_*.tar.gz
              swconfig_*

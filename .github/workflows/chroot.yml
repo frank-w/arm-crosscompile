@@ -21,6 +21,14 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Setup cache
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: "*_arm*.tar.gz"
+          key: ${{ runner.os }}-chroot
+          restore-keys: ${{ runner.os }}-chroot
+
       - name: Install depencies
         run: |
           sudo apt update
@@ -46,13 +54,13 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 #          body: ${{ github.sha }}
-          tag_name: "CHROOT-Bullseye"
+          tag_name: "CHROOT"
           target_commitish: ${{ github.sha }}
           files: |
             debian_*.tar.gz
 
       - uses: actions/upload-artifact@v2
         with:
-          name: bullseye-chroot
+          name: chroot
           path: |
             debian_*.tar.gz

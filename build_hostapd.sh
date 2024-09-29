@@ -15,7 +15,10 @@ if [ "$(stat -c %d:%i /)" != "$(stat -c %d:%i /proc/1/root/. 2>/dev/null)" ]; th
 	cd hostapd/
 	git clone http://w1.fi/hostap.git
 	cd hostap/hostapd/
+	sed -i 's/#CONFIG_SAE/CONFIG_SAE/' defconfig
+	sed -i 's/#CONFIG_ACS/CONFIG_ACS/' defconfig
 	cp defconfig .config
+	make config
 	make
 	file hostapd hostapd_cli
 

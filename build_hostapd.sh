@@ -18,7 +18,7 @@ if [ "$(stat -c %d:%i /)" != "$(stat -c %d:%i /proc/1/root/. 2>/dev/null)" ]; th
 	git sparse-checkout init --cone
 	git sparse-checkout set include scripts arch/arm/include arch/arm64/include
 	git checkout
-	make -j4 headers_install
+	make -j4 headers_install INSTALL_HDR_PATH=/usr/local/
 
 	echo "build hostapd"
 	cd /usr/src

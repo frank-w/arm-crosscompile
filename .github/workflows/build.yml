@@ -51,8 +51,8 @@ jobs:
 
       - name: download and unpack chroot
         run: |
-          wget -nv https://github.com/frank-w/arm-crosscompile/releases/download/CHROOT-Bullseye/debian_${{ env.DEBIAN_RELEASE }}_armhf.tar.gz
-          wget -nv https://github.com/frank-w/arm-crosscompile/releases/download/CHROOT-Bullseye/debian_${{ env.DEBIAN_RELEASE }}_arm64.tar.gz
+          wget -nv https://github.com/frank-w/arm-crosscompile/releases/download/CHROOT-${{ env.DEBIAN_RELEASE }}/debian_${{ env.DEBIAN_RELEASE }}_armhf.tar.gz
+          wget -nv https://github.com/frank-w/arm-crosscompile/releases/download/CHROOT-${{ env.DEBIAN_RELEASE }}/debian_${{ env.DEBIAN_RELEASE }}_arm64.tar.gz
           sudo tar -xzf debian_${{ env.DEBIAN_RELEASE }}_armhf.tar.gz --strip-components=5
           sudo tar -xzf debian_${{ env.DEBIAN_RELEASE }}_arm64.tar.gz --strip-components=5
           ls -lh

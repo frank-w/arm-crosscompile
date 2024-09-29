@@ -54,13 +54,13 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 #          body: ${{ github.sha }}
-          tag_name: "CHROOT"
+          tag_name: "CHROOT-bookworm"
           target_commitish: ${{ github.sha }}
           files: |
             debian_*.tar.gz
 
       - uses: actions/upload-artifact@v2
         with:
-          name: chroot
+          name: chroot-bookworm
           path: |
             debian_*.tar.gz

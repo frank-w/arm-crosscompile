@@ -9,7 +9,7 @@ if [ "$(stat -c %d:%i /)" != "$(stat -c %d:%i /proc/1/root/. 2>/dev/null)" ]; th
 
 	apt update
 	apt -y install --no-install-recommends pkg-config libssl-dev libreadline-dev libpcsclite-dev libnl-route-3-dev libnl-genl-3-dev libnl-3-dev libncurses5-dev libdbus-1-dev docbook-utils docbook-to-man
-	apt -y install --no-install-recommends git gcc make rsync
+	apt -y install --no-install-recommends git gcc make rsync file
 
 	echo "clone/install linux-headers"
 	cd /usr/src

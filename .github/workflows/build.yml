@@ -22,16 +22,25 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      - name: Install depencies
+        run: |
+          sudo apt update
+          sudo apt install git binfmt-support qemu-user-static
+
+      - name: download linux source
+        run: |
+          cd /tmp
+          git clone --depth=1 --no-checkout --filter=blob:none --sparse https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+          cd linux
+          git sparse-checkout init --cone
+          git sparse-checkout set include arch/arm/include arch/arm64/include
+          git checkout
+
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout
         uses: actions/checkout@v2
         with:
           fetch-depth: 1
-
-      - name: Install depencies
-        run: |
-          sudo apt update
-          sudo apt install binfmt-support qemu-user-static
 
 #      - uses: actions/download-artifact@v2
 #        with:
@@ -62,11 +71,13 @@ jobs:
 #          ARCH: armhf
 #          CHROOT: debian_${{ env.DEBIAN_RELEASE }}_${{ env.ARCH }}
         run: |
+          sudo mkdir -p ${{ env.CHROOT }}/usr/src/linux_src
+          sudo mount -o bind /tmp/linux ${{ env.CHROOT }}/usr/src/linux_src
           sudo cp build_hostapd.sh ${{ env.CHROOT }}/usr/local/bin/
           sudo chroot ${{ env.CHROOT }} /usr/local/bin/build_hostapd.sh
           cp ${{ env.CHROOT }}/usr/src/hostapd/hostap/hostapd/hostapd ./hostapd_${{ env.ARCH }}
           cp ${{ env.CHROOT }}/usr/src/hostapd/hostap/wpa_supplicant/wpa_supplicant ./wpa_supplicant_${{ env.ARCH }}
-
+          sudo umount /tmp/linux
       - name: build iproute2 (armhf)
 #        env:
 #          ARCH: armhf
@@ -88,10 +99,14 @@ jobs:
 #          ARCH: arm64
 #          CHROOT: debian_${{ env.DEBIAN_RELEASE }}_${{ env.ARCH }}
         run: |
+          sudo mkdir -p ${{ env.CHROOT }}/usr/src/linux_src
+          sudo mount -o bind /tmp/linux ${{ env.CHROOT }}/usr/src/linux_src
           sudo cp build_hostapd.sh ${{ env.CHROOT }}/usr/local/bin/
+          sudo chroot ${{ env.CHROOT }} "cd /usr/src/linux_src; make headers_install"
           sudo chroot ${{ env.CHROOT }} /usr/local/bin/build_hostapd.sh
           cp ${{ env.CHROOT }}/usr/src/hostapd/hostap/hostapd/hostapd ./hostapd_${{ env.ARCH }}
           cp ${{ env.CHROOT }}/usr/src/hostapd/hostap/wpa_supplicant/wpa_supplicant ./wpa_supplicant_${{ env.ARCH }}
+          sudo umount /tmp/linux
 
       - name: build iproute2 (arm64)
         run: |

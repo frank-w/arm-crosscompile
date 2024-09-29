@@ -39,7 +39,7 @@ jobs:
       - name: setup environment
         env:
           ARCH: armhf
-          DEBIAN_RELEASE: buster
+          DEBIAN_RELEASE: bookworm
           #CHROOT: 'debian_${{ env.DEBIAN_RELEASE }}_${{ env.ARCH }}'
         run: |
           echo "CUR_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV

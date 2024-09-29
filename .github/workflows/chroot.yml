@@ -58,9 +58,3 @@ jobs:
           target_commitish: ${{ github.sha }}
           files: |
             debian_*.tar.gz
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: chroot-bookworm
-          path: |
-            debian_*.tar.gz

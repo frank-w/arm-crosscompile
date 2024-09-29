@@ -38,12 +38,6 @@ jobs:
         run: |
           ./buildchroot.sh armhf
 
-      - name: Install fix for aarch64 ldconfig-issue
-        run: |
-          sudo add-apt-repository -y ppa:jacob/virtualisation
-          sudo apt update
-          sudo apt install qemu-user-static
-
       - name: build arm64 chroot
         run: |
           ./buildchroot.sh arm64

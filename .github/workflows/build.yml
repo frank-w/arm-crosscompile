@@ -76,6 +76,12 @@ jobs:
           sudo chroot ${{ env.CHROOT }} /usr/local/bin/build_iproute2.sh
           cp ${{ env.CHROOT }}/usr/src/iproute2/iproute2.tar.gz ./iproute2_${{ env.ARCH }}.tar.gz
 
+      - name: build iperf3 (armhf)
+        run: |
+          sudo cp build_iperf3.sh ${{ env.CHROOT }}/usr/local/bin/
+          sudo chroot ${{ env.CHROOT }} /usr/local/bin/build_iperf3.sh
+          cp ${{ env.CHROOT }}/usr/src/iperf/iperf.tar.gz ./iperf_${{ env.ARCH }}.tar.gz
+
       - name: change arch in environment
         env:
           ARCH: arm64
@@ -124,4 +130,5 @@ jobs:
              hostapd_*.tar.gz
              wpa_supplicant_*
              iproute2_*.tar.gz
+             iperf_*.tar.gz
              swconfig_*

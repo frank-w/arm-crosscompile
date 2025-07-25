@@ -27,8 +27,13 @@ if [ "$(stat -c %d:%i /)" != "$(stat -c %d:%i /proc/1/root/. 2>/dev/null)" ]; th
 	git clone http://w1.fi/hostap.git
 	cd hostap/hostapd/
 	cp defconfig .config
-	sed -i 's/#CONFIG_SAE/CONFIG_SAE/' .config
-	sed -i 's/#CONFIG_ACS/CONFIG_ACS/' .config
+
+	for name in SAE ACS IEEE80211AC IEEE80211AX IEEE80211BE;do
+		echo "enable CONFIG_$name";
+		sed -i -e 's/#\(CONFIG_'$name'\)/\1/' .config
+	done
+
+	cat .config
 	make -j4
 	file hostapd hostapd_cli
 	tar -czf hostapd.tar.gz hostapd hostapd_cli

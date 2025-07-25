@@ -28,13 +28,14 @@ if [ "$(stat -c %d:%i /)" != "$(stat -c %d:%i /proc/1/root/. 2>/dev/null)" ]; th
 	cd hostap/hostapd/
 	cp defconfig .config
 
-	for name in SAE ACS IEEE80211AC IEEE80211AX IEEE80211BE;do
+	for name in SAE ACS OCV IEEE80211AC IEEE80211AX IEEE80211BE;do
 		echo "enable CONFIG_$name";
 		sed -i -e 's/#\(CONFIG_'$name'\)/\1/' .config
 	done
 
 	cat .config
 	make -j4
+	if [[ $? -ne 0 ]];then exit 1; fi
 	file hostapd hostapd_cli
 	tar -czf hostapd.tar.gz hostapd hostapd_cli
 
@@ -43,7 +44,9 @@ if [ "$(stat -c %d:%i /)" != "$(stat -c %d:%i /proc/1/root/. 2>/dev/null)" ]; th
 	cp defconfig .config
 	sed -i 's/#CONFIG_MESH/CONFIG_MESH/' .config
 	make -j4
+	if [[ $? -ne 0 ]];then exit 1; fi
 	file wpa_supplicant
+	tar -czf wpa_supplicant.tar.gz wpa_supplicant
 else
   echo "no chroot...exiting..."
 fi
